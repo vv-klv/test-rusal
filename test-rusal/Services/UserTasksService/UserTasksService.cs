@@ -1,7 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace test_rusal.Services.UserTasksService
 {
@@ -14,17 +11,40 @@ namespace test_rusal.Services.UserTasksService
             _context = context;
         }
 
-        public async Task<List<UserTaskDb>?> GetAllTasks()
+        public async Task<List<UserTaskDb>?> GetAllTasks(string userName)
         {
-            return await _context.UserTasks.ToListAsync();
+            if (userName == null)
+            {
+                return null;
+            }
+
+            if (userName == "Admin")
+            {
+                return await _context.UserTasks.ToListAsync();
+            }
+            
+            return await _context.UserTasks
+                .Where(task => task.UserName == userName)
+                .ToListAsync();
         }
 
-        public async Task<UserTaskDb?> GetSingleTask(int id)
+        public async Task<UserTaskDb?> GetSingleTask(int id, string userName)
         {
-            return await _context.UserTasks.FindAsync(id);
+            if (userName == null)
+            {
+                return null;
+            }
+
+            if (userName == "Admin")
+            {
+                return await _context.UserTasks.FindAsync(id);
+            }
+
+            return await _context.UserTasks
+                .FirstOrDefaultAsync(task => task.Id == id && task.UserName == userName); 
         }
 
-        public async Task<List<UserTaskDb>?> AddTask(UserTaskBase requestTask)
+        public async Task<List<UserTaskDb>?> AddTask(UserTaskBase requestTask, string userName)
         {
             if (requestTask == null)
             {
@@ -33,7 +53,7 @@ namespace test_rusal.Services.UserTasksService
 
             var userTaskDB = new UserTaskDb
             {
-                UserName = requestTask.UserName,
+                UserName = userName,
                 TaskName = requestTask.TaskName,
                 TaskDescr = requestTask.TaskDescr,
                 TaskStatus = requestTask.TaskStatus,
@@ -44,12 +64,21 @@ namespace test_rusal.Services.UserTasksService
             _context.UserTasks.Add(userTaskDB);
             await _context.SaveChangesAsync();
 
-            return await _context.UserTasks.ToListAsync();
+            if (userName == "Admin")
+            {
+                return await _context.UserTasks.ToListAsync();
+            }
+
+            return await _context.UserTasks
+                .Where(task => task.UserName == userName)
+                .ToListAsync();
         }
 
-        public async Task<List<UserTaskDb>?> UpdateTask(int id, UserTaskBase requestTask)
+        public async Task<List<UserTaskDb>?> UpdateTask(int id, UserTaskBase requestTask, string userName)
         {
-            var task = await _context.UserTasks.FindAsync(id);
+            var task = await _context.UserTasks
+                .FirstOrDefaultAsync(task => task.Id == id && task.UserName == userName);
+
             if (requestTask == null || task == null )
             {
                 return null;
@@ -62,7 +91,14 @@ namespace test_rusal.Services.UserTasksService
 
             await _context.SaveChangesAsync();
 
-            return await _context.UserTasks.ToListAsync();
+            if (userName == "Admin")
+            {
+                return await _context.UserTasks.ToListAsync();
+            }
+
+            return await _context.UserTasks
+                .Where(task => task.UserName == userName)
+                .ToListAsync();
         }
     }
 }

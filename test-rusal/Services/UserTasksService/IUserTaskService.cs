@@ -2,9 +2,9 @@
 {
     public interface IUserTaskService
     {
-        Task<List<UserTaskDb>?> GetAllTasks();
-        Task<UserTaskDb?> GetSingleTask(int id);
-        Task<List<UserTaskDb>?> AddTask(UserTaskBase task);
-        Task<List<UserTaskDb>?> UpdateTask(int id, UserTaskBase request);
+        Task<List<UserTaskDb>?> GetAllTasks(string userName);
+        Task<UserTaskDb?> GetSingleTask(int id, string userName);
+        Task<List<UserTaskDb>?> AddTask(UserTaskBase task, string userName);
+        Task<List<UserTaskDb>?> UpdateTask(int id, UserTaskBase request, string userName);
     }
 }

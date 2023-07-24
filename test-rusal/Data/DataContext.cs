@@ -6,7 +6,6 @@ namespace test_rusal.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -16,5 +15,6 @@ namespace test_rusal.Data
         }
 
         public DbSet<UserTaskDb> UserTasks { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
