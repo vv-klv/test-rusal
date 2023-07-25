@@ -18,7 +18,7 @@ namespace test_rusal.Services.UserTasksService
                 return null;
             }
 
-            if (userName == "Admin")
+            if (userName == "admin")
             {
                 return await _context.UserTasks.ToListAsync();
             }
@@ -35,7 +35,7 @@ namespace test_rusal.Services.UserTasksService
                 return null;
             }
 
-            if (userName == "Admin")
+            if (userName == "admin")
             {
                 return await _context.UserTasks.FindAsync(id);
             }
@@ -64,7 +64,7 @@ namespace test_rusal.Services.UserTasksService
             _context.UserTasks.Add(userTaskDB);
             await _context.SaveChangesAsync();
 
-            if (userName == "Admin")
+            if (userName == "admin")
             {
                 return await _context.UserTasks.ToListAsync();
             }
@@ -77,12 +77,12 @@ namespace test_rusal.Services.UserTasksService
         public async Task<List<UserTaskDb>?> UpdateTask(int id, UserTaskBase requestTask, string userName)
         {
             var task = new UserTaskDb();
-            if (userName != "Admin")
+            if (userName != "admin")
             {
                 task = await _context.UserTasks
                 .FirstOrDefaultAsync(task => task.Id == id && task.UserName == userName);
             } 
-            else if (userName == "Admin")
+            else if (userName == "admin")
             {
                 task = await _context.UserTasks
                 .FirstOrDefaultAsync(task => task.Id == id);
@@ -100,7 +100,7 @@ namespace test_rusal.Services.UserTasksService
 
             await _context.SaveChangesAsync();
 
-            if (userName == "Admin")
+            if (userName == "admin")
             {
                 return await _context.UserTasks.ToListAsync();
             }
