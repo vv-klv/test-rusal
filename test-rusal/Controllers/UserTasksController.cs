@@ -18,79 +18,79 @@ namespace test_rusal.Controllers
             _userService = userService;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         public async Task<ActionResult<List<UserTaskDb>>> GetAllTasks()
         {
             var userName = _userService.GetMyName();
 
             if (userName == null)
             {
-                return BadRequest("Wrong user name!");
+                return Unauthorized();
             }
 
             var result = await _userTaskService.GetAllTasks(userName);
             if (result == null)
             {
-                return NotFound("There are no tasks!");
+                return NotFound();
             }
 
             return result;
         }
 
-        [HttpGet("{id}"), Authorize]
+        [HttpGet("{id}")]
         public async Task<ActionResult<UserTaskDb>> GetSingleTask(int id)
         {
             var userName = _userService.GetMyName();
 
             if (userName == null)
             {
-                return BadRequest("Wrong user name!");
+                return Unauthorized();
             }
 
             var result = await _userTaskService.GetSingleTask(id, userName);
             if (result == null)
             {
-                return NotFound("This task doesn't exist!");
+                return NotFound();
             }
 
             return Ok(result);
         }
 
-        [HttpPost, Authorize]
+        [HttpPost]
         public async Task<ActionResult<List<UserTaskDb>>> AddTask(UserTaskBase task)
         {
             var userName = _userService.GetMyName();
 
             if (userName == null)
             {
-                return BadRequest("Wrong user name!");
+                return Unauthorized();
             }
 
             var result = await _userTaskService.AddTask(task, userName);
             if (result == null)
             {
-                return NotFound("Task not added!");
+                return NotFound();
             }
 
             return Ok(result);
         }
 
 
-        [HttpPut("{id}"), Authorize]
+        [HttpPut("{id}")]
         public async Task<ActionResult<List<UserTaskDb>>> UpdateTask(int id, UserTaskBase request)
         {
             var userName = _userService.GetMyName();
 
             if (userName == null)
             {
-                return BadRequest("Wrong user name!");
+                return Unauthorized();
             }
 
             var result = await _userTaskService.UpdateTask(id, request, userName);
 
             if (result == null)
             {
-                return NotFound("There is no task with the specified id!");
+                return NotFound();
             }
 
             return Ok(result);

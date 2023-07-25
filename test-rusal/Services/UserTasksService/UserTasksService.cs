@@ -76,9 +76,18 @@ namespace test_rusal.Services.UserTasksService
 
         public async Task<List<UserTaskDb>?> UpdateTask(int id, UserTaskBase requestTask, string userName)
         {
-            var task = await _context.UserTasks
+            var task = new UserTaskDb();
+            if (userName != "Admin")
+            {
+                task = await _context.UserTasks
                 .FirstOrDefaultAsync(task => task.Id == id && task.UserName == userName);
-
+            } 
+            else if (userName == "Admin")
+            {
+                task = await _context.UserTasks
+                .FirstOrDefaultAsync(task => task.Id == id);
+            }
+                
             if (requestTask == null || task == null )
             {
                 return null;

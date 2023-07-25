@@ -3,11 +3,9 @@ global using test_rusal.Data;
 
 using test_rusal.Services.UserTasksService;
 using test_rusal.Services.UserService;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Configuration;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -36,6 +34,14 @@ builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddDbContext<DataContext>();
 
+
+builder.Services.AddCors(options => options.AddPolicy(name: "Origins",
+    policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    }
+));
+
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -48,12 +54,6 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 };
 });
 
-builder.Services.AddCors(options => options.AddPolicy(name: "Origins",
-    policy =>
-    {
-        policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
-    }
-));
 
 var app = builder.Build();
 

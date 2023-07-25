@@ -41,30 +41,30 @@ namespace test_rusal.Controllers
 
             if (addedUser == null)
             {
-                return BadRequest("User already exists!");
+                return BadRequest();
             }
 
             return Ok(addedUser);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<User?>> Login(UserDto request)
+        public async Task<ActionResult<string>> Login(UserDto request)
         {
             var user = await _userService.GetUser(request);
 
             if (user == null)
             {
-                return BadRequest("Wrong login or password!");
+                return BadRequest();
             }
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                return BadRequest("Wrong login or password!");
+                return BadRequest();
             }
 
             string token = CreateToken(user);
 
-            return Ok(token);
+            return token;
         }
 
         private string CreateToken(User user)
